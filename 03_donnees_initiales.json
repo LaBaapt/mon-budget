@@ -1,0 +1,349 @@
+{
+  "version": 2,
+  "parametres": {
+    "devise": "EUR",
+    "langue": "fr-FR",
+    "premierMois": "2026-12",
+    "note": "Montants mensuels en euros. Les mois sont au format AAAA-MM. 'fin' = dernier mois inclus (null = sans fin)."
+  },
+  "revenus": [
+    {
+      "id": "salaire",
+      "nom": "Salaire net",
+      "montant": 2100,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Salaire net après prélèvement à la source"
+    }
+  ],
+  "charges": [
+    {
+      "id": "loyer",
+      "nom": "Loyer",
+      "categorie": "Logement",
+      "frequence": "mensuelle",
+      "montant": 770,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Préavis de 3 mois minimum ; bloqué jusqu'à l'achat immobilier"
+    },
+    {
+      "id": "energie-a-deux",
+      "nom": "Électricité & gaz",
+      "categorie": "Logement",
+      "frequence": "mensuelle",
+      "montant": 155.9,
+      "debut": "2026-12",
+      "fin": "2026-12",
+      "note": "Mensualité calculée pour 2 personnes, avant réajustement"
+    },
+    {
+      "id": "energie",
+      "nom": "Électricité & gaz",
+      "categorie": "Logement",
+      "frequence": "mensuelle",
+      "montant": 128,
+      "debut": "2027-01",
+      "fin": null,
+      "note": "Estimation pour 1 personne, chauffage à 19 °C. À remplacer par la vraie mensualité une fois réajustée"
+    },
+    {
+      "id": "eau-a-deux",
+      "nom": "Eau",
+      "categorie": "Logement",
+      "frequence": "mensuelle",
+      "montant": 30,
+      "debut": "2026-12",
+      "fin": "2026-12",
+      "note": "Mensualité à deux"
+    },
+    {
+      "id": "eau",
+      "nom": "Eau",
+      "categorie": "Logement",
+      "frequence": "mensuelle",
+      "montant": 20,
+      "debut": "2027-01",
+      "fin": null,
+      "note": "Estimation pour 1 personne"
+    },
+    {
+      "id": "chaudiere",
+      "nom": "Entretien chaudière",
+      "categorie": "Logement",
+      "frequence": "annuelle",
+      "moisAnnuel": 1,
+      "montant": 100,
+      "debut": "2027-01",
+      "fin": null,
+      "note": "Environ 100 € chaque année en janvier"
+    },
+    {
+      "id": "bouygues",
+      "nom": "Bouygues (box + ligne 06)",
+      "categorie": "Abonnements",
+      "frequence": "mensuelle",
+      "montant": 76.38,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Part de Baptiste seulement (Naomie paie sa ligne). Passage chez Free prévu plus tard : box en juin 2027, ligne 06 en octobre 2027 → Freebox Pop S 24,99 € + forfait 5G 9,99 € (15,99 € après 1 an)"
+    },
+    {
+      "id": "assurances",
+      "nom": "Assurances (voiture + maison)",
+      "categorie": "Assurances",
+      "frequence": "mensuelle",
+      "montant": 107.1,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "172,64 € moins l'assurance de la voiture de Naomie (786,43 €/an), qu'elle paie elle-même. Contrats signés en août 2026, remise en concurrence possible à partir d'août 2027"
+    },
+    {
+      "id": "protection-juridique",
+      "nom": "Protection juridique",
+      "categorie": "Assurances",
+      "frequence": "mensuelle",
+      "montant": 10.9,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "BPCE Assurances (Caisse d'Épargne). Vérifier si elle fait doublon avec l'assurance habitation"
+    },
+    {
+      "id": "accidents-vie",
+      "nom": "Garantie accidents de la vie",
+      "categorie": "Assurances",
+      "frequence": "mensuelle",
+      "montant": 13.97,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "BPCE Assurances (Caisse d'Épargne)"
+    },
+    {
+      "id": "credit-auto",
+      "nom": "Crédit auto",
+      "categorie": "Crédits",
+      "frequence": "mensuelle",
+      "montant": 259.79,
+      "debut": "2026-12",
+      "fin": "2035-07",
+      "note": "Prêt conso à 7,6 %, dernière échéance le 04/07/2035. Rachat à étudier avec le courtier au moment de l'achat immobilier"
+    },
+    {
+      "id": "telephone",
+      "nom": "Paiement téléphone",
+      "categorie": "Crédits",
+      "frequence": "mensuelle",
+      "montant": 46.17,
+      "debut": "2026-12",
+      "fin": "2028-09",
+      "note": "24 mensualités depuis octobre 2026"
+    },
+    {
+      "id": "paiement-4x-1",
+      "nom": "Paiement en 4 fois n°1",
+      "categorie": "Crédits",
+      "frequence": "mensuelle",
+      "montant": 67.59,
+      "debut": "2026-12",
+      "fin": "2027-02",
+      "note": "3 dernières mensualités"
+    },
+    {
+      "id": "paiement-4x-2",
+      "nom": "Paiement en 4 fois n°2",
+      "categorie": "Crédits",
+      "frequence": "mensuelle",
+      "montant": 145,
+      "debut": "2026-12",
+      "fin": "2027-02",
+      "note": "3 dernières mensualités"
+    },
+    {
+      "id": "canal-plus",
+      "nom": "Canal+",
+      "categorie": "Abonnements",
+      "frequence": "mensuelle",
+      "montant": 59.99,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Engagé"
+    },
+    {
+      "id": "rmc-sport",
+      "nom": "RMC Sport",
+      "categorie": "Abonnements",
+      "frequence": "mensuelle",
+      "montant": 9.99,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Engagé"
+    },
+    {
+      "id": "apple-music",
+      "nom": "Apple Music",
+      "categorie": "Abonnements",
+      "frequence": "mensuelle",
+      "montant": 11.99,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Remplace Spotify Duo (déjà fait)"
+    },
+    {
+      "id": "google-one",
+      "nom": "Google One",
+      "categorie": "Abonnements",
+      "frequence": "mensuelle",
+      "montant": 4.99,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Stockage cloud"
+    },
+    {
+      "id": "ps-plus",
+      "nom": "PlayStation Plus",
+      "categorie": "Abonnements",
+      "frequence": "annuelle",
+      "moisAnnuel": 4,
+      "montant": 71.99,
+      "debut": "2027-04",
+      "fin": null,
+      "note": "Payé chaque année en avril"
+    },
+    {
+      "id": "amazon-prime",
+      "nom": "Amazon Prime",
+      "categorie": "Abonnements",
+      "frequence": "annuelle",
+      "moisAnnuel": null,
+      "montant": 69.9,
+      "debut": null,
+      "fin": null,
+      "note": "Payé à l'année. Mois de renouvellement à renseigner dans l'app (tant qu'il est vide, la charge n'est comptée dans aucun mois)"
+    },
+    {
+      "id": "telepeage",
+      "nom": "Badge télépéage",
+      "categorie": "Transport",
+      "frequence": "mensuelle",
+      "montant": 2,
+      "debut": "2026-12",
+      "fin": null,
+      "note": null
+    },
+    {
+      "id": "frais-bancaires-decembre",
+      "nom": "Frais bancaires (Caisse d'Épargne + compte joint)",
+      "categorie": "Banque",
+      "frequence": "mensuelle",
+      "montant": 34.25,
+      "debut": "2026-12",
+      "fin": "2026-12",
+      "note": "Cotisation Caisse d'Épargne 23,20 € + compte joint 11,05 €. BoursoBank gratuite ensuite (mobilité bancaire en cours)"
+    },
+    {
+      "id": "regul-impot",
+      "nom": "Régularisation impôt",
+      "categorie": "Impôts",
+      "frequence": "ponctuelle",
+      "montant": 161,
+      "debut": "2026-12",
+      "fin": "2026-12",
+      "note": "Dernière mensualité de régularisation"
+    },
+    {
+      "id": "cigarettes",
+      "nom": "Cigarettes",
+      "categorie": "Vie courante",
+      "frequence": "mensuelle",
+      "montant": 152.08,
+      "debut": "2026-12",
+      "fin": null,
+      "note": "Un paquet à 25 € tous les 5 jours (25 × 365 / 5 / 12). Non négociable, traité comme une charge fixe"
+    }
+  ],
+  "enveloppes": [
+    {
+      "id": "besoins",
+      "nom": "Besoins",
+      "pourcentage": 60,
+      "note": "Courses, carburant, etc."
+    },
+    {
+      "id": "epargne",
+      "nom": "Épargne",
+      "pourcentage": 20,
+      "note": "Mis de côté ; en fin de mois, peut être viré vers un compte d'épargne"
+    },
+    {
+      "id": "plaisir",
+      "nom": "Plaisir",
+      "pourcentage": null,
+      "calcul": "100 - besoins - epargne",
+      "note": "Toujours le reste"
+    }
+  ],
+  "depenses": [],
+  "valeursDeControle": {
+    "note": "Sans dépense ni rentrée, répartition 60/20/20. resteARepartir = revenus + rentrées compte courant + report − charges fixes (cigarettes incluses)",
+    "2026-12": {
+      "chargesFixes": 2119.09,
+      "resteARepartir": -19.09,
+      "besoins": 0,
+      "epargne": 0,
+      "plaisir": 0
+    },
+    "2027-01": {
+      "chargesFixes": 1985.94,
+      "resteARepartir": 114.06,
+      "besoins": 68.44,
+      "epargne": 22.81,
+      "plaisir": 22.81
+    },
+    "2027-02": {
+      "chargesFixes": 1885.94,
+      "resteARepartir": 214.06,
+      "besoins": 128.44,
+      "epargne": 42.81,
+      "plaisir": 42.81
+    },
+    "2027-03": {
+      "chargesFixes": 1673.35,
+      "resteARepartir": 426.65,
+      "besoins": 255.99,
+      "epargne": 85.33,
+      "plaisir": 85.33
+    },
+    "2027-04": {
+      "chargesFixes": 1745.34,
+      "resteARepartir": 354.66,
+      "besoins": 212.8,
+      "epargne": 70.93,
+      "plaisir": 70.93
+    }
+  },
+  "comptes": [
+    {
+      "id": "courant",
+      "nom": "Compte courant",
+      "type": "courant",
+      "banque": "BoursoBank",
+      "solde": null,
+      "note": "Son budget = le mois en cours (revenus + rentrées − charges fixes)"
+    },
+    {
+      "id": "livret-a",
+      "nom": "Livret A",
+      "type": "epargne",
+      "solde": 0
+    },
+    {
+      "id": "per",
+      "nom": "PER",
+      "type": "retraite",
+      "solde": 1430,
+      "note": "Déblocable pour l'achat de la résidence principale"
+    }
+  ],
+  "rentrees": [],
+  "clotures": []
+}
