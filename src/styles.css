@@ -1,0 +1,303 @@
+/* =====================================================================
+   Styles de Mon Budget — thème sombre (couleurs de la section 2 de la spec)
+   ===================================================================== */
+:root {
+  --fond: #0B0F14;
+  --carte: #161B22;
+  --champ: #232A35;
+  --separateur: #2A313C;
+  --texte: #F2F4F7;
+  --texte-secondaire: #A0A9B8;
+  --accent: #2F5FEF;
+  --lien: #7EA2FF;
+  --positif: #3DD68C;
+  --negatif: #FF6B5E;
+  --alerte: #F79009;
+  --vert-bouton: #146C43;
+  --rayon: 20px;
+  --haut-onglets: 64px;
+  /* Zones sûres de l'iPhone (encoche en haut, barre en bas) */
+  --sur-haut: env(safe-area-inset-top, 0px);
+  --sur-bas: env(safe-area-inset-bottom, 0px);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: none; padding: 0; cursor: pointer; text-align: inherit; }
+button:disabled { opacity: 0.4; cursor: default; }
+h1 { font-size: 28px; margin: 0; font-weight: 700; }
+h2 { font-size: 17px; margin: 0; font-weight: 600; text-align: center; flex: 1; }
+h3 { font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+p { margin: 8px 0; }
+
+/* ---------- Mise en page générale ---------- */
+.app { max-width: 520px; margin: 0 auto; }
+.ecran {
+  padding: calc(var(--sur-haut) + 8px) 16px calc(var(--haut-onglets) + var(--sur-bas) + 90px);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.entete { display: flex; align-items: center; justify-content: space-between; min-height: 48px; }
+.chargement { display: grid; place-items: center; min-height: 100vh; color: var(--texte-secondaire); }
+
+/* ---------- Cartes ---------- */
+.carte {
+  background: var(--carte);
+  border-radius: var(--rayon);
+  padding: 16px;
+  display: block;
+  width: 100%;
+}
+.carte-heros { text-align: center; padding: 22px 16px; }
+.carte-bleue { background: var(--accent); }
+.carte-bleue .petit { color: rgba(255, 255, 255, 0.85); }
+.carte-encadree { border: 2px solid var(--accent); }
+.gros-chiffre { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; margin: 4px 0; font-variant-numeric: tabular-nums; }
+
+/* ---------- Lignes (libellé à gauche, montant à droite) ---------- */
+.ligne {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 44px; width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+.ligne > span:last-child { text-align: right; white-space: nowrap; }
+.ligne h3 { margin: 0; }
+.ligne-cliquable { border-radius: 10px; }
+.ligne-cliquable:active, .enveloppe:active { background: var(--champ); }
+.ligne-droite { display: inline-flex; align-items: center; gap: 6px; }
+.ligne-texte { display: flex; flex-direction: column; align-items: flex-start; text-align: left; min-width: 0; padding: 6px 0; }
+.ligne.gras { font-weight: 600; }
+.ligne.grise { opacity: 0.45; }
+.separateur { height: 1px; background: var(--separateur); margin: 4px 0; }
+
+.texte-secondaire { color: var(--texte-secondaire); }
+.petit { font-size: 13px; }
+.bloc { display: block; }
+.centre { text-align: center; }
+.positif { color: var(--positif); }
+.negatif { color: var(--negatif); }
+.lien { color: var(--lien); font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; }
+
+.pastille { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+
+/* ---------- Boutons ---------- */
+.bouton-icone {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: inline-grid; place-items: center; color: var(--texte);
+}
+.bouton-icone:active { background: var(--champ); }
+.bouton-croix {
+  width: 32px; height: 32px; margin: -6px -6px -6px 0; border-radius: 50%;
+  display: inline-grid; place-items: center; color: var(--texte-secondaire);
+}
+.bouton-principal, .bouton-secondaire, .bouton-danger, .bouton-vert {
+  min-height: 50px; padding: 0 18px; border-radius: 14px;
+  font-weight: 600; text-align: center;
+}
+.bouton-principal { background: var(--accent); color: #fff; }
+.bouton-vert { background: var(--vert-bouton); color: #fff; }
+.bouton-secondaire { background: var(--champ); }
+.bouton-danger { background: rgba(255, 107, 94, 0.15); color: var(--negatif); }
+.large { width: 100%; margin-top: 8px; }
+
+/* ---------- Sélecteur de mois ---------- */
+.selecteur-mois { display: flex; align-items: center; gap: 4px; font-size: 20px; font-weight: 600; }
+.selecteur-mois span { min-width: 150px; text-align: center; }
+
+/* ---------- Rappels et encarts ---------- */
+.rappel {
+  background: var(--champ); border-radius: 14px; padding: 12px 16px;
+  color: var(--lien); font-size: 14px; min-height: 44px; width: 100%;
+}
+.encart-rouge, .encart-orange {
+  border-radius: var(--rayon); padding: 14px 16px; font-size: 15px; width: 100%; text-align: left;
+}
+.encart-rouge { background: rgba(255, 107, 94, 0.12); border: 1px solid rgba(255, 107, 94, 0.5); }
+.encart-rouge .lien { display: flex; color: var(--negatif); }
+.encart-orange .lien { display: flex; }
+.encart-orange { background: rgba(247, 144, 9, 0.12); border: 1px solid rgba(247, 144, 9, 0.5); }
+
+/* ---------- Enveloppes ---------- */
+.enveloppe { display: block; width: 100%; padding: 4px 0 12px; border-radius: 10px; }
+.barre { height: 8px; border-radius: 4px; background: var(--champ); overflow: hidden; }
+.barre-remplie { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+/* ---------- Répartition ---------- */
+.repartition-resume { font-size: 20px; font-weight: 700; }
+.ligne-repartition { padding: 4px 0; }
+.compteur { display: inline-flex; align-items: center; gap: 8px; }
+.compteur span { min-width: 48px; text-align: center; font-weight: 600; }
+.compteur button {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--champ);
+  font-size: 22px; text-align: center;
+}
+
+/* ---------- Fin du mois ---------- */
+.carte-fin-mois { border: 1px solid var(--separateur); }
+.options-fin { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+.options-fin button {
+  background: var(--champ); border: 2px solid transparent; border-radius: 14px;
+  padding: 10px 6px; min-height: 64px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.options-fin button strong { font-size: 14px; overflow-wrap: anywhere; }
+.options-fin button span { font-size: 12px; color: var(--texte-secondaire); }
+.options-fin button.actif { border-color: var(--lien); background: rgba(126, 162, 255, 0.12); }
+.carte-fin-mois .bouton-principal { width: 100%; margin-top: 4px; }
+
+/* ---------- Charges fixes ---------- */
+.etiquettes { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.etiquette {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  background: var(--champ); color: var(--texte-secondaire);
+}
+
+/* ---------- Interrupteur ---------- */
+.interrupteur {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 44px; padding: 0 4px; font-size: 15px; color: var(--texte-secondaire); cursor: pointer;
+}
+.interrupteur input { position: absolute; opacity: 0; pointer-events: none; }
+.interrupteur-curseur {
+  flex: none; width: 51px; height: 31px; border-radius: 16px; background: var(--champ);
+  position: relative; transition: background 0.2s;
+}
+.interrupteur-curseur::after {
+  content: ''; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px;
+  border-radius: 50%; background: #fff; transition: transform 0.2s;
+}
+.interrupteur input:checked + .interrupteur-curseur { background: var(--positif); }
+.interrupteur input:checked + .interrupteur-curseur::after { transform: translateX(20px); }
+
+/* ---------- Champs de formulaire ---------- */
+.formulaire { display: flex; flex-direction: column; gap: 14px; margin: 12px 0; }
+.champ { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.formulaire .champ { margin: 0; }
+.champ-libelle { font-size: 13px; color: var(--texte-secondaire); font-weight: 500; }
+.champ-aide { font-size: 12px; color: var(--texte-secondaire); }
+.champ input, .champ select, .champ textarea {
+  background: var(--champ); border: 1px solid transparent; border-radius: 12px;
+  min-height: 48px; padding: 10px 14px; width: 100%;
+  font-size: 16px; /* 16 px minimum : évite le zoom automatique de Safari */
+  -webkit-appearance: none; appearance: none;
+}
+.champ input:focus, .champ select:focus, .champ textarea:focus { outline: none; border-color: var(--lien); }
+.champ select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--texte-secondaire) 50%),
+    linear-gradient(135deg, var(--texte-secondaire) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
+  background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px;
+}
+.champ-avec-bouton { display: flex; gap: 8px; }
+.deux-colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.deux-colonnes .champ { min-width: 0; }
+.ajouter .champ { margin: 4px 0; }
+.champ-avec-bouton .bouton-secondaire { min-height: 48px; }
+
+/* ---------- Choix en pastilles ---------- */
+.choix { display: flex; gap: 6px; background: var(--champ); border-radius: 14px; padding: 4px; }
+.choix button {
+  flex: 1; min-height: 44px; border-radius: 10px; border: 1px solid transparent;
+  font-weight: 600; font-size: 15px; text-align: center;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.choix button.actif { background: var(--accent); color: #fff; }
+.choix-petit button { min-height: 36px; font-size: 14px; padding: 0 8px; white-space: nowrap; }
+
+/* ---------- Panneaux plein écran ---------- */
+.panneau {
+  position: fixed; inset: 0; z-index: 20;
+  background: var(--fond);
+  display: flex; flex-direction: column;
+  animation: entree 0.2s ease-out;
+}
+@keyframes entree { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.panneau-entete {
+  display: flex; align-items: center; gap: 8px;
+  padding: calc(var(--sur-haut) + 6px) 8px 6px;
+  max-width: 520px; width: 100%; margin: 0 auto;
+}
+.bouton-retour { min-width: 96px; color: var(--lien); }
+.panneau-contenu {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 8px 16px 24px; max-width: 520px; width: 100%; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.panneau-pied {
+  display: flex; gap: 10px;
+  padding: 10px 16px calc(var(--sur-bas) + 10px);
+  max-width: 520px; width: 100%; margin: 0 auto;
+  border-top: 1px solid var(--separateur);
+}
+.panneau-pied > * { flex: 1; }
+.panneau-pied .bouton-danger { flex: 0 0 auto; }
+
+/* ---------- Écran Ajouter ---------- */
+.ajouter .panneau-entete .choix { flex: 1; }
+.ajouter .panneau-contenu { gap: 8px; }
+.montant-saisi {
+  font-size: 48px; font-weight: 700; text-align: center; letter-spacing: -0.02em;
+  padding: 4px 0; font-variant-numeric: tabular-nums;
+}
+.aide { font-size: 14px; color: var(--texte-secondaire); text-align: center; margin: 4px 0; }
+.apercu { background: var(--carte); border-radius: 14px; padding: 6px 14px; font-size: 14px; }
+.apercu .ligne { min-height: 36px; }
+.ajouter .panneau-pied { flex-direction: column; gap: 8px; border-top: none; padding-top: 4px; }
+.ajouter-boutons { display: flex; gap: 10px; }
+.ajouter-boutons > * { flex: 1; }
+.ajouter-boutons .bouton-danger { flex: 0 0 auto; }
+.pave { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pave button {
+  height: 46px; border-radius: 14px; background: var(--carte);
+  font-size: 24px; font-weight: 500; text-align: center;
+  display: grid; place-items: center;
+}
+.pave button:active { background: var(--champ); }
+
+/* ---------- Bouton « + » flottant ---------- */
+.bouton-plus {
+  position: fixed; z-index: 10;
+  right: max(16px, calc(50% - 260px + 16px));
+  bottom: calc(var(--haut-onglets) + var(--sur-bas) + 16px);
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: grid; place-items: center;
+  box-shadow: 0 8px 24px rgba(47, 95, 239, 0.45);
+}
+.bouton-plus:active { transform: scale(0.95); }
+
+/* ---------- Barre d'onglets ---------- */
+.onglets {
+  position: fixed; z-index: 10; left: 0; right: 0; bottom: 0;
+  display: flex; justify-content: center;
+  background: rgba(11, 15, 20, 0.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--separateur);
+  padding-bottom: var(--sur-bas);
+}
+.onglets button {
+  flex: 1; max-width: 173px; height: var(--haut-onglets);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  color: var(--texte-secondaire); font-size: 11px; font-weight: 500;
+}
+.onglets button.actif { color: var(--lien); }
+
+/* ---------- Petit message ---------- */
+.toast {
+  position: fixed; z-index: 30; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--haut-onglets) + var(--sur-bas) + 90px);
+  background: var(--champ); color: var(--texte); padding: 10px 18px; border-radius: 999px;
+  font-size: 14px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); white-space: nowrap;
+}
