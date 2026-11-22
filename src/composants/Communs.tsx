@@ -60,17 +60,6 @@ export function Choix<T extends string>(props: {
   );
 }
 
-/** Interrupteur on/off façon iPhone. */
-export function Interrupteur(props: { actif: boolean; onChange: (v: boolean) => void; libelle: string }) {
-  return (
-    <label className="interrupteur">
-      <span>{props.libelle}</span>
-      <input type="checkbox" checked={props.actif} onChange={(e) => props.onChange(e.target.checked)} />
-      <span className="interrupteur-curseur" />
-    </label>
-  );
-}
-
 /** Un champ de formulaire avec son étiquette. */
 export function Champ(props: { libelle: string; children: ReactNode; aide?: ReactNode }) {
   return (

@@ -75,3 +75,12 @@ et le plus cohérent avec la spec. Tout peut être changé plus tard.
 28. **Pas de routeur** : la navigation est un simple état React (onglet + panneaux ouverts).
 29. Le dossier `maquette/` n'existait pas dans le dépôt : le design suit uniquement la section 2 de la spec.
 30. Montants toujours affichés avec 2 décimales (`0,00 €`), avec des espaces insécables.
+
+## Modifications après la première version
+
+31. **Interrupteur « Voir aussi les charges terminées ou à venir » supprimé** (demande de Baptiste) :
+    l'écran Charges fixes montre uniquement les charges du mois affiché. Pour voir une charge d'un
+    autre mois, il suffit de changer de mois avec les flèches.
+32. **Barre d'onglets qui remontait sur l'écran Comptes** (iPhone, app installée) : quand une page est
+    plus courte que l'écran, iOS place mal les éléments fixés en bas. Chaque écran fait maintenant au
+    moins la hauteur de l'écran (`min-height: 100vh`).

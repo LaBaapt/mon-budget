@@ -22,7 +22,7 @@ Choix non couverts par la spec : `DECISIONS.md` (à compléter à chaque nouvell
 - `src/stockage.ts` — IndexedDB ; `src/donnees.ts` — données initiales, import/export JSON
 - `src/format.ts` (montants), `src/mois.ts` (mois "AAAA-MM"), `src/constantes.ts`
 - `src/ecrans/` — MonMois, FinDuMois, ChargesFixes, EditionCharge, Comptes, Ajouter, Reglages
-- `src/composants/` — Panneau, SelecteurMois, Choix, Interrupteur, Champ, Barre, icônes SVG
+- `src/composants/` — Panneau, SelecteurMois, Choix, Champ, Barre, icônes SVG
 - `src/styles.css` — CSS simple, couleurs du thème sombre en variables `:root`
 - `public/` — manifest, service worker `sw.js`, icônes
 - `.github/workflows/deploiement.yml` — tests + build + GitHub Pages sur push `main`

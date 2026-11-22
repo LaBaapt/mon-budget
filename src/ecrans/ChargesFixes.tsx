@@ -2,11 +2,11 @@
 import { useState } from 'react';
 import type { Charge, Mois } from '../types';
 import { useBudget } from '../etat';
-import { chargeAnnuelleIncomplete, chargeCompteDans, chargesDuMois, chargesFixes, prochainChangementCharges } from '../calculs';
+import { chargeAnnuelleIncomplete, chargesDuMois, chargesFixes, prochainChangementCharges } from '../calculs';
 import { euros, versCentimes } from '../format';
 import { libelleMois, libelleMoisCourt, nomDuNumero, nomMois } from '../mois';
 import { CATEGORIES } from '../constantes';
-import { Interrupteur, SelecteurMois } from '../composants/Communs';
+import { SelecteurMois } from '../composants/Communs';
 import { IconeDroite } from '../composants/Icones';
 import { EditionCharge } from './EditionCharge';
 
@@ -30,21 +30,19 @@ function etiquettes(c: Charge): string[] {
 export function ChargesFixes(props: { mois: Mois; setMois: (m: Mois) => void }) {
   const { d } = useBudget();
   const { mois } = props;
-  const [voirTout, setVoirTout] = useState(false);
   const [edition, setEdition] = useState<Charge | 'nouvelle' | null>(null);
 
   const duMois = chargesDuMois(d, mois);
   const total = chargesFixes(d, mois);
   const changement = prochainChangementCharges(d, mois);
   const incompletes = d.charges.filter(chargeAnnuelleIncomplete);
-  const affichees = voirTout ? d.charges : duMois;
 
   // Regroupement par catégorie, dans l'ordre de la liste CATEGORIES (les autres à la fin)
   const categories = [...CATEGORIES, ...new Set(d.charges.map((c) => c.categorie).filter((c) => !CATEGORIES.includes(c)))];
   const groupes = categories
     .map((cat) => ({
       cat,
-      charges: affichees.filter((c) => c.categorie === cat),
+      charges: duMois.filter((c) => c.categorie === cat),
       sousTotal: duMois.filter((c) => c.categorie === cat).reduce((t, c) => t + versCentimes(c.montant), 0),
     }))
     .filter((g) => g.charges.length > 0);
@@ -71,25 +69,20 @@ export function ChargesFixes(props: { mois: Mois; setMois: (m: Mois) => void }) 
         </button>
       ))}
 
-      <Interrupteur libelle="Voir aussi les charges terminées ou à venir" actif={voirTout} onChange={setVoirTout} />
-
       {groupes.map((g) => (
         <section className="carte" key={g.cat}>
           <div className="ligne"><h3>{g.cat}</h3><span className="texte-secondaire">{euros(g.sousTotal)}</span></div>
-          {g.charges.map((c) => {
-            const compte = chargeCompteDans(c, mois);
-            return (
-              <button key={c.id} className={`ligne ligne-cliquable ${compte ? '' : 'grise'}`} onClick={() => setEdition(c)}>
-                <span className="ligne-texte">
-                  <span>{c.nom}</span>
-                  <span className="etiquettes">
-                    {etiquettes(c).map((e) => <span className="etiquette" key={e}>{e}</span>)}
-                  </span>
+          {g.charges.map((c) => (
+            <button key={c.id} className="ligne ligne-cliquable" onClick={() => setEdition(c)}>
+              <span className="ligne-texte">
+                <span>{c.nom}</span>
+                <span className="etiquettes">
+                  {etiquettes(c).map((e) => <span className="etiquette" key={e}>{e}</span>)}
                 </span>
-                <span className="ligne-droite">{euros(versCentimes(c.montant))}<IconeDroite taille={16} /></span>
-              </button>
-            );
-          })}
+              </span>
+              <span className="ligne-droite">{euros(versCentimes(c.montant))}<IconeDroite taille={16} /></span>
+            </button>
+          ))}
         </section>
       ))}
 

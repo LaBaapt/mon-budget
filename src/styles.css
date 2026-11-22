@@ -26,6 +26,9 @@
 
 html, body {
   margin: 0;
+  /* Toujours au moins la hauteur de l'écran : sinon, sur iPhone (app installée),
+     une page courte (ex. Comptes) faisait remonter la barre d'onglets. */
+  min-height: 100vh;
   background: var(--fond);
   color: var(--texte);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -46,6 +49,7 @@ p { margin: 8px 0; }
 /* ---------- Mise en page générale ---------- */
 .app { max-width: 520px; margin: 0 auto; }
 .ecran {
+  min-height: 100vh;
   padding: calc(var(--sur-haut) + 8px) 16px calc(var(--haut-onglets) + var(--sur-bas) + 90px);
   display: flex; flex-direction: column; gap: 12px;
 }
@@ -79,7 +83,6 @@ p { margin: 8px 0; }
 .ligne-droite { display: inline-flex; align-items: center; gap: 6px; }
 .ligne-texte { display: flex; flex-direction: column; align-items: flex-start; text-align: left; min-width: 0; padding: 6px 0; }
 .ligne.gras { font-weight: 600; }
-.ligne.grise { opacity: 0.45; }
 .separateur { height: 1px; background: var(--separateur); margin: 4px 0; }
 
 .texte-secondaire { color: var(--texte-secondaire); }
@@ -163,23 +166,6 @@ p { margin: 8px 0; }
   font-size: 11px; padding: 2px 8px; border-radius: 999px;
   background: var(--champ); color: var(--texte-secondaire);
 }
-
-/* ---------- Interrupteur ---------- */
-.interrupteur {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  min-height: 44px; padding: 0 4px; font-size: 15px; color: var(--texte-secondaire); cursor: pointer;
-}
-.interrupteur input { position: absolute; opacity: 0; pointer-events: none; }
-.interrupteur-curseur {
-  flex: none; width: 51px; height: 31px; border-radius: 16px; background: var(--champ);
-  position: relative; transition: background 0.2s;
-}
-.interrupteur-curseur::after {
-  content: ''; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px;
-  border-radius: 50%; background: #fff; transition: transform 0.2s;
-}
-.interrupteur input:checked + .interrupteur-curseur { background: var(--positif); }
-.interrupteur input:checked + .interrupteur-curseur::after { transform: translateX(20px); }
 
 /* ---------- Champs de formulaire ---------- */
 .formulaire { display: flex; flex-direction: column; gap: 14px; margin: 12px 0; }
