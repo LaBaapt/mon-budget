@@ -88,3 +88,5 @@ et le plus cohérent avec la spec. Tout peut être changé plus tard.
     dans le détail d'un compte. Pour le compte courant, un lien « Modifier » en haut de sa carte ouvre
     un panneau avec seulement le nom et la banque (pas de type ni de solde de départ) ; le reste de la
     carte renvoie toujours vers Mon mois. La banque s'affiche sous le type dans la liste des comptes.
+34. **Mention « (cigarettes incluses) » retirée** de la ligne Charges fixes du Résumé (demande de
+    Baptiste). Le calcul ne change pas : les cigarettes restent une charge fixe comme les autres.

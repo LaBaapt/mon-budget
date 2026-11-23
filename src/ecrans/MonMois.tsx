@@ -116,7 +116,7 @@ export function MonMois(props: {
           </div>
         ))}
         <button className="ligne ligne-cliquable" onClick={props.allerCharges}>
-          <span>Charges fixes <span className="texte-secondaire petit">(cigarettes incluses)</span></span>
+          <span>Charges fixes</span>
           <span className="ligne-droite">{euros(-chargesFixes(d, mois))}<IconeDroite taille={16} /></span>
         </button>
         <div className="separateur" />
