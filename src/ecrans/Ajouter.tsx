@@ -1,12 +1,12 @@
 // Écran « Ajouter » : une dépense ou une rentrée d'argent, avec un grand pavé numérique.
 import { useState } from 'react';
-import type { Depense, IdEnveloppe, Mois } from '../types';
+import type { Depense, Donnees, IdEnveloppe, Mois, Rentree } from '../types';
 import { useBudget } from '../etat';
 import { COMPTE_COURANT, depensesParEnveloppe, enveloppesPrevues, resteARepartir, soldeCompte } from '../calculs';
 import { euros, montantPourChamp, versCentimes, versEuros } from '../format';
 import { aujourdhui, moisCourant, moisDe } from '../mois';
 import { ENVELOPPES, enveloppe } from '../constantes';
-import { ajouterRentree, enregistrerDepense, supprimerDepense } from '../actions';
+import { enregistrerDepense, enregistrerRentree, supprimerDepense, supprimerRentree } from '../actions';
 import { nouvelId } from '../donnees';
 import { Champ, Choix } from '../composants/Communs';
 import { IconeCroix, IconeEffacer } from '../composants/Icones';
@@ -17,22 +17,34 @@ const AUTRES = 'autres'; // origine « Autres » (gain, prêt d'un ami…)
 export function Ajouter(props: {
   mode: Mode;
   depense?: Depense; // si présent : on modifie cette dépense
+  rentree?: Rentree; // si présent : on modifie cette rentrée
   moisAffiche: Mois;
   onFermer: () => void;
 }) {
-  const { d, modifier, message } = useBudget();
+  const { d: donnees, modifier, message } = useBudget();
   const edition = props.depense;
+  const editionRentree = props.rentree;
+  const enEdition = Boolean(edition || editionRentree);
+
+  // Pour les aperçus, on fait comme si l'opération modifiée n'existait pas encore
+  // (sinon elle serait comptée deux fois).
+  const d: Donnees = {
+    ...donnees,
+    depenses: donnees.depenses.filter((x) => x.id !== edition?.id),
+    rentrees: donnees.rentrees.filter((x) => x.id !== editionRentree?.id),
+  };
+  const operation = edition ?? editionRentree;
 
   // Date par défaut : aujourd'hui si on regarde le mois en cours, sinon le 1er du mois affiché.
   const dateParDefaut = props.moisAffiche === moisCourant() ? aujourdhui() : `${props.moisAffiche}-01`;
 
-  const [mode, setMode] = useState<Mode>(edition ? 'depense' : props.mode);
-  const [saisie, setSaisie] = useState(edition ? montantPourChamp(versCentimes(edition.montant)) : '');
+  const [mode, setMode] = useState<Mode>(edition ? 'depense' : editionRentree ? 'rentree' : props.mode);
+  const [saisie, setSaisie] = useState(operation ? montantPourChamp(versCentimes(operation.montant)) : '');
   const [enveloppeId, setEnveloppeId] = useState<IdEnveloppe>(edition?.enveloppeId ?? d.meta.derniereEnveloppe);
-  const [libelle, setLibelle] = useState(edition?.libelle ?? '');
-  const [date, setDate] = useState(edition?.date ?? dateParDefaut);
-  const [vers, setVers] = useState(COMPTE_COURANT);
-  const [depuis, setDepuis] = useState<string>(AUTRES);
+  const [libelle, setLibelle] = useState(operation?.libelle ?? '');
+  const [date, setDate] = useState(operation?.date ?? dateParDefaut);
+  const [vers, setVers] = useState(editionRentree?.versCompteId ?? COMPTE_COURANT);
+  const [depuis, setDepuis] = useState<string>(editionRentree?.depuisCompteId ?? AUTRES);
 
   const montant = saisie === '' ? 0 : Math.round(parseFloat(saisie.replace(',', '.')) * 100) || 0;
   const mois = moisDe(date || dateParDefaut);
@@ -52,10 +64,7 @@ export function Ajouter(props: {
 
   // --- Aide du mode Dépense ---
   const prevu = enveloppesPrevues(d, mois)[enveloppeId];
-  let dejaDepense = depensesParEnveloppe(d, mois)[enveloppeId];
-  if (edition && moisDe(edition.date) === mois && edition.enveloppeId === enveloppeId) {
-    dejaDepense -= versCentimes(edition.montant); // on ne compte pas deux fois la dépense modifiée
-  }
+  const dejaDepense = depensesParEnveloppe(d, mois)[enveloppeId];
   const resteApres = prevu - dejaDepense - montant;
 
   // --- Aperçu du mode Rentrée ---
@@ -86,8 +95,8 @@ export function Ajouter(props: {
       }));
       message(edition ? 'Dépense modifiée' : 'Dépense ajoutée');
     } else {
-      modifier((x) => ajouterRentree(x, {
-        id: nouvelId('ren'),
+      modifier((x) => enregistrerRentree(x, {
+        id: editionRentree?.id ?? nouvelId('ren'),
         date,
         montant: versEuros(montant),
         versCompteId: vers,
@@ -95,7 +104,7 @@ export function Ajouter(props: {
         libelle: libelle.trim() || undefined,
         type: 'rentree',
       }));
-      message('Rentrée ajoutée');
+      message(editionRentree ? 'Rentrée modifiée' : 'Rentrée ajoutée');
     }
     props.onFermer();
   }
@@ -104,7 +113,7 @@ export function Ajouter(props: {
     <div className="panneau ajouter" role="dialog" aria-label="Ajouter">
       <header className="panneau-entete">
         <button className="bouton-icone" aria-label="Fermer" onClick={props.onFermer}><IconeCroix taille={22} /></button>
-        {edition ? <h2>Modifier la dépense</h2> : (
+        {enEdition ? <h2>{edition ? 'Modifier la dépense' : 'Modifier la rentrée'}</h2> : (
           <Choix petit valeur={mode} onChange={setMode} options={[
             { valeur: 'depense', libelle: 'Dépense' },
             { valeur: 'rentree', libelle: "Rentrée d'argent" },
@@ -187,16 +196,19 @@ export function Ajouter(props: {
           ))}
         </div>
         <div className="ajouter-boutons">
-          {edition && (
+          {enEdition && (
             <button className="bouton-danger" onClick={() => {
-              if (!window.confirm('Supprimer cette dépense ?')) return;
-              modifier((x) => supprimerDepense(x, edition.id));
-              message('Dépense supprimée');
+              if (!window.confirm(edition ? 'Supprimer cette dépense ?' : 'Supprimer cette rentrée ?')) return;
+              if (edition) modifier((x) => supprimerDepense(x, edition.id));
+              if (editionRentree) modifier((x) => supprimerRentree(x, editionRentree.id));
+              message('Supprimé');
               props.onFermer();
             }}>Supprimer</button>
           )}
           <button className={mode === 'rentree' ? 'bouton-vert' : 'bouton-principal'} onClick={valider} disabled={montant <= 0}>
-            {mode === 'rentree' ? 'Ajouter la rentrée' : edition ? 'Enregistrer la dépense' : 'Valider la dépense'}
+            {mode === 'rentree'
+              ? (editionRentree ? 'Enregistrer la rentrée' : 'Ajouter la rentrée')
+              : (edition ? 'Enregistrer la dépense' : 'Valider la dépense')}
           </button>
         </div>
       </div>

@@ -23,8 +23,9 @@ export function supprimerDepense(d: Donnees, id: string) {
 }
 
 // --- Rentrées ---------------------------------------------------------------
-export function ajouterRentree(d: Donnees, r: Rentree) {
-  d.rentrees.push(r);
+/** Ajoute une rentrée, ou remplace celle qui a le même id (modification). */
+export function enregistrerRentree(d: Donnees, r: Rentree) {
+  enregistrerDans(d.rentrees, r);
 }
 export function supprimerRentree(d: Donnees, id: string) {
   d.rentrees = d.rentrees.filter((x) => x.id !== id);

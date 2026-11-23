@@ -3,7 +3,7 @@
 // Tout est calculé en CENTIMES ENTIERS. On n'arrondit qu'à l'affichage.
 // Ces fonctions ne modifient jamais les données : elles ne font que calculer.
 // ===========================================================================
-import type { Charge, Donnees, IdEnveloppe, Mois, Rentree, Repartition } from './types';
+import type { Charge, Depense, Donnees, IdEnveloppe, Mois, Rentree, Repartition } from './types';
 import { versCentimes } from './format';
 import { ajouterMois, dernierJour, moisDe, numeroMois, nomMois } from './mois';
 
@@ -230,4 +230,74 @@ export function prochainChangementCharges(d: Donnees, m: Mois) {
     if (total !== actuel) return { mois: suivant, total };
   }
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Journal des opérations
+// ---------------------------------------------------------------------------
+
+/** Une ligne du journal : une dépense, une rentrée, un virement ou un report. */
+export interface Operation {
+  id: string;
+  date: string;
+  sorte: 'depense' | 'rentree' | 'virement' | 'report';
+  libelle: string;
+  detail: string; // enveloppe ou compte(s) concerné(s)
+  montant: number; // centimes : négatif = dépense, positif = rentrée, virement = positif (neutre)
+  depense?: Depense;
+  rentree?: Rentree;
+}
+
+/**
+ * Moment où une opération a été saisie, retrouvé dans son id ("dep-<horodatage>-xxxxx",
+ * voir nouvelId). 0 si l'id n'en contient pas (données de départ, reports…).
+ */
+export function horodatage(id: string): number {
+  const trouve = /^[a-z]+-([0-9a-z]{8,})-[0-9a-z]+$/.exec(id);
+  return trouve ? parseInt(trouve[1], 36) : 0;
+}
+
+/**
+ * Toutes les opérations datées dans le mois m, de la plus récente à la plus ancienne.
+ * À date égale, la dernière saisie passe en premier.
+ */
+export function operationsDuMois(d: Donnees, m: Mois): Operation[] {
+  const liste: (Operation & { ordre: number })[] = [];
+
+  d.depenses.forEach((dep, i) => {
+    if (moisDe(dep.date) !== m) return;
+    const env = d.enveloppes.find((e) => e.id === dep.enveloppeId)?.nom ?? dep.enveloppeId;
+    liste.push({
+      id: dep.id, date: dep.date, sorte: 'depense', ordre: i,
+      libelle: dep.libelle || 'Dépense', detail: env,
+      montant: -versCentimes(dep.montant), depense: dep,
+    });
+  });
+
+  d.rentrees.forEach((r, i) => {
+    if (moisDe(r.date) !== m) return;
+    const vers = nomCompte(d, r.versCompteId);
+    let sorte: Operation['sorte'] = 'rentree';
+    let libelle = r.libelle || 'Rentrée d\'argent';
+    let detail = `Autres → ${vers}`;
+    if (r.type === 'report') {
+      sorte = 'report';
+      detail = vers;
+    } else if (r.depuisCompteId) {
+      sorte = 'virement';
+      libelle = r.libelle || 'Virement';
+      detail = `${nomCompte(d, r.depuisCompteId)} → ${vers}`;
+    }
+    liste.push({
+      id: r.id, date: r.date, sorte, ordre: d.depenses.length + i,
+      libelle, detail, montant: versCentimes(r.montant), rentree: r,
+    });
+  });
+
+  // Tri : date décroissante, puis la saisie la plus récente d'abord
+  liste.sort((a, b) => {
+    if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+    return horodatage(b.id) - horodatage(a.id) || b.ordre - a.ordre;
+  });
+  return liste.map(({ ordre: _ordre, ...op }) => op);
 }

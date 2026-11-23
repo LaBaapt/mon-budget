@@ -73,3 +73,18 @@ export function libelleDate(date: string): string {
   const [a, m, j] = date.split('-');
   return `${j}/${m}/${a}`;
 }
+
+const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+
+/** "Aujourd'hui", "Hier" ou "Mercredi 3 décembre" (pour regrouper le journal par jour). */
+export function libelleJour(date: string): string {
+  const auj = aujourdhui();
+  if (date === auj) return "Aujourd'hui";
+  const [a, m, j] = date.split('-').map(Number);
+  const hier = new Date();
+  hier.setDate(hier.getDate() - 1);
+  const dateHier = `${hier.getFullYear()}-${String(hier.getMonth() + 1).padStart(2, '0')}-${String(hier.getDate()).padStart(2, '0')}`;
+  if (date === dateHier) return 'Hier';
+  const jour = JOURS[new Date(a, m - 1, j).getDay()];
+  return `${jour[0].toUpperCase()}${jour.slice(1)} ${j} ${NOMS_MOIS[m - 1]}`;
+}

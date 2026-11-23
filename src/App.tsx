@@ -1,6 +1,6 @@
 // L'app : les 3 onglets, le bouton « + » et les écrans qui s'ouvrent par-dessus.
 import { useState } from 'react';
-import type { Depense, Mois } from './types';
+import type { Depense, Mois, Rentree } from './types';
 import { useBudget } from './etat';
 import { moisCourant } from './mois';
 import { MonMois } from './ecrans/MonMois';
@@ -20,7 +20,7 @@ export function App() {
     const m = moisCourant();
     return m < d.parametres.premierMois ? d.parametres.premierMois : m;
   });
-  const [ajouter, setAjouter] = useState<{ mode: 'depense' | 'rentree'; depense?: Depense } | null>(null);
+  const [ajouter, setAjouter] = useState<{ mode: 'depense' | 'rentree'; depense?: Depense; rentree?: Rentree } | null>(null);
   const [reglages, setReglages] = useState(false);
 
   function changerOnglet(o: Onglet) {
@@ -57,7 +57,7 @@ export function App() {
 
       {reglages && <Reglages onFermer={() => setReglages(false)} />}
       {ajouter && (
-        <Ajouter mode={ajouter.mode} depense={ajouter.depense} moisAffiche={mois} onFermer={() => setAjouter(null)} />
+        <Ajouter mode={ajouter.mode} depense={ajouter.depense} rentree={ajouter.rentree} moisAffiche={mois} onFermer={() => setAjouter(null)} />
       )}
     </div>
   );

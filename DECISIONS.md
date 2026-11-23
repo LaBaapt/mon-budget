@@ -88,3 +88,16 @@ et le plus cohérent avec la spec. Tout peut être changé plus tard.
     dans le détail d'un compte. Pour le compte courant, un lien « Modifier » en haut de sa carte ouvre
     un panneau avec seulement le nom et la banque (pas de type ni de solde de départ) ; le reste de la
     carte renvoie toujours vers Mon mois. La banque s'affiche sous le type dans la liste des comptes.
+34. **Mention « (cigarettes incluses) » retirée** de la ligne Charges fixes du Résumé (demande de
+    Baptiste). Le calcul ne change pas : les cigarettes restent une charge fixe comme les autres.
+35. **Journal des opérations** (demande de Baptiste, solution choisie : une carte sur Mon mois plutôt
+    qu'un 4ᵉ onglet). Carte « Dernières opérations » sous le résumé (5 dernières du mois affiché) et
+    lien « Tout voir → » vers le journal complet du mois, avec un filtre Tout | Dépenses | Rentrées.
+    - Ordre : date la plus récente d'abord ; à date égale, la dernière saisie d'abord. L'heure de
+      saisie est lue dans l'identifiant (`dep-<horodatage>-…`, voir `nouvelId`), donc aucune donnée
+      à ajouter ni à migrer.
+    - « Rentrées » regroupe rentrées, reports et virements entre comptes. Les virements sont en gris
+      et ne comptent pas dans le « Total des rentrées » (ce n'est pas de l'argent en plus).
+    - Toucher une opération ouvre l'écran de modification. **Les rentrées sont maintenant
+      modifiables** (avant, on pouvait seulement les supprimer). Un report ne se modifie pas : un
+      message explique qu'il faut annuler la clôture du mois précédent.

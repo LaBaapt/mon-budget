@@ -1,21 +1,23 @@
 // Écran « Mon mois » (accueil).
 import { useState } from 'react';
-import type { Depense, IdEnveloppe, Mois } from '../types';
+import type { Depense, IdEnveloppe, Mois, Rentree } from '../types';
 import { useBudget } from '../etat';
 import {
   chargesFixes, depensesParEnveloppe, enveloppesPrevues, repartitionDuMois, rentreesCourantDuMois,
   resteADepenser, resteARepartir, sortiesCourantDuMois,
 } from '../calculs';
 import { euros, versCentimes } from '../format';
-import { libelleDate, moisDe, nomMois } from '../mois';
+import { ajouterMois, libelleDate, moisDe, nomMois } from '../mois';
 import { ENVELOPPES, JOURS_RAPPEL_SAUVEGARDE, enveloppe } from '../constantes';
 import { changerRepartition, supprimerDepense, supprimerRentree } from '../actions';
 import { Barre, Panneau, SelecteurMois } from '../composants/Communs';
 import { IconeCroix, IconeDroite, IconeReglages } from '../composants/Icones';
 import { FinDuMois } from './FinDuMois';
+import { DernieresOperations } from './Operations';
+import type { Operation } from '../calculs';
 
 export interface OuvrirAjouter {
-  (options: { mode: 'depense' | 'rentree'; depense?: Depense }): void;
+  (options: { mode: 'depense' | 'rentree'; depense?: Depense; rentree?: Rentree }): void;
 }
 
 export function MonMois(props: {
@@ -51,6 +53,16 @@ export function MonMois(props: {
       modifier((x) => supprimerRentree(x, id));
       message('Supprimé');
     }
+  }
+
+  /** Toucher une opération du journal ouvre l'écran de modification. */
+  function ouvrirOperation(op: Operation) {
+    if (op.depense) return props.ouvrirAjouter({ mode: 'depense', depense: op.depense });
+    if (op.sorte === 'report') {
+      const moisClos = ajouterMois(moisDe(op.date), -1);
+      return window.alert(`Ce report vient de la clôture de ${nomMois(moisClos)}. Pour le changer, annule cette clôture (en bas de ${nomMois(moisClos)}).`);
+    }
+    if (op.rentree) props.ouvrirAjouter({ mode: 'rentree', rentree: op.rentree });
   }
 
   function changerPct(env: 'besoins' | 'epargne', delta: number) {
@@ -116,7 +128,7 @@ export function MonMois(props: {
           </div>
         ))}
         <button className="ligne ligne-cliquable" onClick={props.allerCharges}>
-          <span>Charges fixes <span className="texte-secondaire petit">(cigarettes incluses)</span></span>
+          <span>Charges fixes</span>
           <span className="ligne-droite">{euros(-chargesFixes(d, mois))}<IconeDroite taille={16} /></span>
         </button>
         <div className="separateur" />
@@ -134,6 +146,8 @@ export function MonMois(props: {
           </button>
         </section>
       )}
+
+      <DernieresOperations mois={mois} onOuvrir={ouvrirOperation} />
 
       {/* Enveloppes */}
       <section className="carte">
