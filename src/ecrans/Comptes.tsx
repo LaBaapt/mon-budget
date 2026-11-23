@@ -26,26 +26,29 @@ export function Comptes(props: { mois: Mois; allerMonMois: () => void }) {
     <div className="ecran">
       <header className="entete"><h1>Comptes</h1></header>
 
-      <button className="carte carte-encadree" onClick={props.allerMonMois}>
+      {/* Compte courant : le haut ouvre la modification (nom, banque), le bas renvoie vers Mon mois */}
+      <section className="carte carte-encadree">
         <div className="ligne">
           <span><strong>{courant?.nom ?? 'Compte courant'}</strong>
             {courant?.banque && <span className="texte-secondaire"> · {courant.banque}</span>}</span>
-          <IconeDroite taille={16} />
+          {courant && <button className="lien" onClick={() => setOuvert(courant)}>Modifier</button>}
         </div>
-        <div className="texte-secondaire petit">{libelleMois(props.mois)}</div>
-        <div className="ligne"><span>Revenus du mois</span><span>{euros(revenusDuMois(d, props.mois) + entrees)}</span></div>
-        <div className="ligne"><span>Charges fixes</span><span>{euros(-chargesFixes(d, props.mois))}</span></div>
-        <div className={`ligne gras ${resteARepartir(d, props.mois) < 0 ? 'negatif' : ''}`}>
-          <span>Reste à répartir</span><span>{euros(resteARepartir(d, props.mois))}</span>
-        </div>
-      </button>
+        <button className="bloc-cliquable" onClick={props.allerMonMois}>
+          <div className="ligne texte-secondaire petit"><span>{libelleMois(props.mois)}</span><IconeDroite taille={16} /></div>
+          <div className="ligne"><span>Revenus du mois</span><span>{euros(revenusDuMois(d, props.mois) + entrees)}</span></div>
+          <div className="ligne"><span>Charges fixes</span><span>{euros(-chargesFixes(d, props.mois))}</span></div>
+          <div className={`ligne gras ${resteARepartir(d, props.mois) < 0 ? 'negatif' : ''}`}>
+            <span>Reste à répartir</span><span>{euros(resteARepartir(d, props.mois))}</span>
+          </div>
+        </button>
+      </section>
 
       <section className="carte">
         <div className="ligne"><h3>Épargne & investissements</h3><strong>{euros(totalAutres)}</strong></div>
         {autres.length === 0 && <p className="texte-secondaire">Aucun compte pour l'instant.</p>}
         {autres.map((c) => (
           <button key={c.id} className="ligne ligne-cliquable" onClick={() => setOuvert(c)}>
-            <span className="ligne-texte"><span>{c.nom}</span><span className="texte-secondaire petit">{libelleTypeCompte(c.type)}</span></span>
+            <span className="ligne-texte"><span>{c.nom}</span><span className="texte-secondaire petit">{libelleTypeCompte(c.type)}{c.banque ? ` · ${c.banque}` : ''}</span></span>
             <span className="ligne-droite">{euros(soldeCompte(d, c.id))}<IconeDroite taille={16} /></span>
           </button>
         ))}
@@ -62,24 +65,30 @@ export function Comptes(props: { mois: Mois; allerMonMois: () => void }) {
 function DetailCompte(props: { compte: Compte | null; onFermer: () => void }) {
   const { d, modifier, message } = useBudget();
   const c = props.compte;
+  const estCourant = c?.id === COMPTE_COURANT; // pour le compte courant : seulement le nom et la banque
   const [nom, setNom] = useState(c?.nom ?? '');
+  const [banque, setBanque] = useState(c?.banque ?? '');
   const [type, setType] = useState<TypeCompte>(c?.type ?? 'epargne');
   const [solde, setSolde] = useState(c ? montantPourChamp(versCentimes(c.solde ?? 0)) : '0');
   const [erreur, setErreur] = useState('');
-  const mouvements = c ? mouvementsCompte(d, c.id) : [];
+  const mouvements = c && !estCourant ? mouvementsCompte(d, c.id) : [];
 
   function enregistrer() {
     const centimes = lireMontant(solde.replace('-', '').replace('−', ''));
     const negatif = /^[-−]/.test(solde.trim());
     if (!nom.trim()) return setErreur('Donne un nom au compte.');
-    if (centimes === null) return setErreur('Le solde de départ est invalide.');
-    modifier((x) => enregistrerCompte(x, {
+    if (centimes === null && !estCourant) return setErreur('Le solde de départ est invalide.');
+    const compte: Compte = {
       ...(c ?? {}),
       id: c?.id ?? nouvelId('compte'),
       nom: nom.trim(),
-      type,
-      solde: versEuros(negatif ? -centimes : centimes),
-    }));
+      type: estCourant ? 'courant' : type,
+      solde: estCourant ? null : versEuros(negatif ? -(centimes ?? 0) : centimes ?? 0),
+    };
+    // Banque facultative : on n'enregistre le champ que s'il est rempli
+    if (banque.trim()) compte.banque = banque.trim();
+    else delete compte.banque;
+    modifier((x) => enregistrerCompte(x, compte));
     message(c ? 'Compte modifié' : 'Compte ajouté');
     props.onFermer();
   }
@@ -87,7 +96,7 @@ function DetailCompte(props: { compte: Compte | null; onFermer: () => void }) {
   return (
     <Panneau titre={c ? c.nom : 'Nouveau compte'} onFermer={props.onFermer}
       pied={<>
-        {c && (
+        {c && !estCourant && (
           <button className="bouton-danger" onClick={() => {
             if (mouvements.length > 0) return window.alert('Ce compte a des mouvements : supprime-les d\'abord.');
             if (!window.confirm(`Supprimer le compte « ${c.nom} » ?`)) return;
@@ -98,7 +107,7 @@ function DetailCompte(props: { compte: Compte | null; onFermer: () => void }) {
         )}
         <button className="bouton-principal" onClick={enregistrer}>Enregistrer</button>
       </>}>
-      {c && (
+      {c && !estCourant && (
         <section className="carte carte-heros">
           <div className="texte-secondaire">Solde</div>
           <div className="gros-chiffre">{euros(soldeCompte(d, c.id))}</div>
@@ -107,18 +116,25 @@ function DetailCompte(props: { compte: Compte | null; onFermer: () => void }) {
 
       <div className="formulaire">
         <Champ libelle="Nom"><input value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Livret A, PEA…" /></Champ>
-        <Champ libelle="Type">
-          <select value={type} onChange={(e) => setType(e.target.value as TypeCompte)}>
-            {TYPES_COMPTE.map((t) => <option key={t.valeur} value={t.valeur}>{t.libelle}</option>)}
-          </select>
+        <Champ libelle="Banque (facultatif)">
+          <input value={banque} onChange={(e) => setBanque(e.target.value)} placeholder="BoursoBank, Caisse d'Épargne…" />
         </Champ>
-        <Champ libelle="Solde de départ (€)" aide="Le solde du compte avant les mouvements notés dans l'app.">
-          <input inputMode="decimal" value={solde} onChange={(e) => setSolde(e.target.value)} />
-        </Champ>
+        {!estCourant && (
+          <>
+            <Champ libelle="Type">
+              <select value={type} onChange={(e) => setType(e.target.value as TypeCompte)}>
+                {TYPES_COMPTE.map((t) => <option key={t.valeur} value={t.valeur}>{t.libelle}</option>)}
+              </select>
+            </Champ>
+            <Champ libelle="Solde de départ (€)" aide="Le solde du compte avant les mouvements notés dans l'app.">
+              <input inputMode="decimal" value={solde} onChange={(e) => setSolde(e.target.value)} />
+            </Champ>
+          </>
+        )}
         {erreur && <p className="negatif">{erreur}</p>}
       </div>
 
-      {c && (
+      {c && !estCourant && (
         <section className="carte">
           <h3>Historique</h3>
           {mouvements.length === 0 && <p className="texte-secondaire">Aucun mouvement pour l'instant.</p>}

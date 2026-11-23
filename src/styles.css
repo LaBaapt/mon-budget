@@ -68,6 +68,8 @@ p { margin: 8px 0; }
 .carte-bleue { background: var(--accent); }
 .carte-bleue .petit { color: rgba(255, 255, 255, 0.85); }
 .carte-encadree { border: 2px solid var(--accent); }
+.bloc-cliquable { display: block; width: 100%; border-radius: 10px; }
+.bloc-cliquable:active { background: var(--champ); }
 .gros-chiffre { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; margin: 4px 0; font-variant-numeric: tabular-nums; }
 
 /* ---------- Lignes (libellé à gauche, montant à droite) ---------- */
