@@ -84,3 +84,7 @@ et le plus cohérent avec la spec. Tout peut être changé plus tard.
 32. **Barre d'onglets qui remontait sur l'écran Comptes** (iPhone, app installée) : quand une page est
     plus courte que l'écran, iOS place mal les éléments fixés en bas. Chaque écran fait maintenant au
     moins la hauteur de l'écran (`min-height: 100vh`).
+33. **Banque modifiable sur tous les comptes** (demande de Baptiste) : champ « Banque (facultatif) »
+    dans le détail d'un compte. Pour le compte courant, un lien « Modifier » en haut de sa carte ouvre
+    un panneau avec seulement le nom et la banque (pas de type ni de solde de départ) ; le reste de la
+    carte renvoie toujours vers Mon mois. La banque s'affiche sous le type dans la liste des comptes.
