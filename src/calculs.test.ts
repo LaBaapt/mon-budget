@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import initiales from '../03_donnees_initiales.json';
 import { donneesInitiales } from './donnees';
 import {
-  chargeCompteDans, chargesFixes, enveloppesPrevues, montantACloturer, repartitionDuMois,
+  chargeCompteDans, chargesFixes, enveloppesPrevues, horodatage, montantACloturer, operationsDuMois, repartitionDuMois,
   resteADepenser, resteARepartir, soldeCompte, surplusFinDeMois,
 } from './calculs';
 import { versCentimes, euros, lireMontant } from './format';
@@ -126,5 +126,38 @@ describe('Formats', () => {
   it('calcule les mois', () => {
     expect(ajouterMois('2026-12', 1)).toBe('2027-01');
     expect(ajouterMois('2027-01', -1)).toBe('2026-12');
+  });
+});
+
+describe('Journal des opérations', () => {
+  const d = donneesInitiales();
+  d.depenses.push({ id: 'd1', date: '2027-01-05', montant: 20, enveloppeId: 'besoins', libelle: 'Courses' });
+  d.depenses.push({ id: 'd2', date: '2027-01-08', montant: 7.5, enveloppeId: 'plaisir' });
+  d.depenses.push({ id: 'd3', date: '2027-02-01', montant: 99, enveloppeId: 'plaisir' }); // autre mois
+  d.rentrees.push({ id: 'r1', date: '2027-01-05', montant: 50, versCompteId: 'courant', depuisCompteId: null, libelle: 'Gain' });
+  d.rentrees.push({ id: 'r2', date: '2027-01-02', montant: 30, versCompteId: 'livret-a', depuisCompteId: 'courant' });
+  d.rentrees.push({ id: 'r3', date: '2027-01-01', montant: 12, versCompteId: 'courant', depuisCompteId: null, libelle: 'Report de décembre', type: 'report' });
+
+  const ops = operationsDuMois(d, '2027-01');
+  it('liste seulement les opérations du mois, la plus récente en premier', () => {
+    // le 05/01 : la rentrée r1 a été saisie après la dépense d1, elle passe donc avant
+    expect(ops.map((o) => o.id)).toEqual(['d2', 'r1', 'd1', 'r2', 'r3']);
+  });
+  it('donne le bon type et le bon signe à chaque opération', () => {
+    const parId = Object.fromEntries(ops.map((o) => [o.id, o]));
+    expect(parId.d1).toMatchObject({ sorte: 'depense', montant: -2000, detail: 'Besoins', libelle: 'Courses' });
+    expect(parId.r1).toMatchObject({ sorte: 'rentree', montant: 5000, detail: 'Autres → Compte courant' });
+    expect(parId.r2).toMatchObject({ sorte: 'virement', montant: 3000, detail: 'Compte courant → Livret A' });
+    expect(parId.r3).toMatchObject({ sorte: 'report', montant: 1200 });
+  });
+  it("à date égale, l'ordre de saisie compte (pas le type d'opération)", () => {
+    const x = donneesInitiales();
+    const id = (prefixe: string, ms: number) => `${prefixe}-${ms.toString(36)}-abcde`;
+    x.rentrees.push({ id: id('ren', 1_800_000_000_000), date: '2027-01-05', montant: 1, versCompteId: 'courant', depuisCompteId: null });
+    x.depenses.push({ id: id('dep', 1_800_000_001_000), date: '2027-01-05', montant: 1, enveloppeId: 'besoins' });
+    x.depenses.push({ id: id('dep', 1_800_000_002_000), date: '2027-01-05', montant: 1, enveloppeId: 'plaisir' });
+    expect(operationsDuMois(x, '2027-01').map((o) => o.id.slice(0, 3))).toEqual(['dep', 'dep', 'ren']);
+    expect(operationsDuMois(x, '2027-01')[0].depense?.enveloppeId).toBe('plaisir');
+    expect(horodatage('report-2027-01')).toBe(0);
   });
 });
